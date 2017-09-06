@@ -9,23 +9,42 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
 
 export default class Vasttrafik extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = {
+      isAuthentificated: false,
+      token: 'asadsads',
+    };
+  }
+
+  componentDidMount() {
+    
+    fetch('https://api.vasttrafik.se/token?Content-Type=application/x-www-form-urlencoded&grant_type=client_credentials&client_secret=PfRar6qUyJEUCVb76lB7WAGwAqUa&client_id=k_4W8mS4sVIUHehrY2e3t1Bl5wAa&format=json', { 
+      method: 'post',  
+    }).then((res) => { return res.json() })
+      .then((data) => {
+      this.setState({
+        isAuthentificated: true,
+        token: data.access_token,
+      })
+    });
+  }
+
   render() {
+
+    var isAuth = (
+      this.state.isAuthentificated ? <Text> Inloggad </Text> : <Text>Utloggad</Text>
+    );
+
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
+        {isAuth}
+         <Text>{this.state.isAuth}</Text>
       </View>
     );
   }
@@ -37,17 +56,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  }
 });
 
 AppRegistry.registerComponent('Vasttrafik', () => Vasttrafik);
